@@ -1,9 +1,9 @@
 {
   "packagerPort": 19001,
-  "packagerPid": 9544,
+  "packagerPid": 6652,
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://bf-s8e.anonymous.argus.exp.direct",
   "packagerNgrokUrl": "https://packager.bf-s8e.anonymous.argus.exp.direct",
-  "ngrokPid": 13736
+  "ngrokPid": 11900
 }
