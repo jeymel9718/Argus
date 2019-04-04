@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { colors } from '../../styles'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
 const DEVICE_HEIGHT = Dimensions.get('window').height
@@ -40,7 +41,7 @@ export default class LoginButton extends React.Component {
 
     setTimeout(() => {
       if (this.props.onPressButton()) {
-        this.props.navigation.navigate('Home')
+        this.props.navigation.navigate(this.props.screen)
       } else {
         alert("Incorrecto")
       }
@@ -79,10 +80,10 @@ export default class LoginButton extends React.Component {
             activeOpacity={1}>
             {this.state.isLoading ? (
               <ActivityIndicator size="large"
-                color='blue'
+                color={colors.primary}
               />
             ) : (
-                <Text style={styles.text}>LOGIN</Text>
+                <Text style={styles.text}>{this.props.message}</Text>
               )}
           </TouchableOpacity>
           <Animated.View
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#00949e',
+    backgroundColor: colors.secondary,
     borderRadius: 20,
     height: MARGIN,
     justifyContent: 'center',
@@ -111,8 +112,8 @@ const styles = StyleSheet.create({
   },
   circle: {
     alignSelf: 'center',
-    backgroundColor: '#00949e',
-    borderColor: '#00949e',
+    backgroundColor: colors.secondary,
+    borderColor: colors.secondary,
     borderRadius: 100,
     borderWidth: 1,
     height: MARGIN,
@@ -122,6 +123,6 @@ const styles = StyleSheet.create({
   },
   text: {
     backgroundColor: 'transparent',
-    color: 'white',
+    color: colors.white,
   },
 })

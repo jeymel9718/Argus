@@ -1,14 +1,18 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation'
 
-import LoginScreen from './screens/login'
-import HomeScreen from './screens/home'
-import DeviceScreen from './screens/device';
+import LoginScreen from './src/screens/login'
+import HomeScreen from './src/screens/home'
+import DeviceScreen from './src/screens/device'
+import SettingsScreen from './src/screens/settings'
+import RegisterScreen from './src/screens/register'
 
 const App = createStackNavigator({
-  Login: { screen: LoginScreen },
   Home: { screen: HomeScreen },
-  Device: { screen: DeviceScreen }
+  Login: { screen: LoginScreen },
+  Device: { screen: DeviceScreen },
+  Settings: { screen: SettingsScreen },
+  Register: { screen: RegisterScreen }
 })
 
 export default App

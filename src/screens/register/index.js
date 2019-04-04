@@ -1,40 +1,34 @@
 import React from 'react'
-import Dimensions from 'Dimensions'
 import {
-  Image,
-  ImageBackground,
-  KeyboardAvoidingView,
   StyleSheet,
-  Text,
-  View,
+  ImageBackground,
+  KeyboardAvoidingView
 } from 'react-native'
-
-import ImgBackground from '../../assets/wallpaper.jpg'
-import IconUser from '../../assets/user.png'
-import IconLocked from '../../assets/locked.png'
-import LogoReact from '../../assets/logo.png'
+import ImgBackground from '../../../assets/wallpaper.jpg'
+import IconUser from '../../../assets/user.png'
+import IconLocked from '../../../assets/locked.png'
 
 import Input from '../../components/login-components/logininput.js'
 import LoginButton from '../../components/login-components/loginbutton'
 
-const DEVICE_WIDTH = Dimensions.get('window').width
-const DEVICE_HEIGHT = Dimensions.get('window').height
-const USER = {
-  username: 'Thanos',
-  password: '123',
-}
-
-export default class LoginScreen extends React.Component {
+export default class RegisterScreen extends React.Component {
   static navigationOptions = {
-    header: null,
+    title: 'Home'
   }
 
   constructor() {
     super()
     this.state = {
       username: '',
-      password: '',
+      email: '',
+      password: ''
     }
+  }
+
+  _onEmailTextChanged = event => {
+    this.setState({
+      email: event.nativeEvent.text,
+    })
   }
 
   _onPasswordTextChanged = event => {
@@ -49,21 +43,13 @@ export default class LoginScreen extends React.Component {
     })
   }
 
-  _isValidUser = () => {
-    if (this.state.username === USER.username && this.state.password === USER.password) {
-      return true
-    } else {
-      return false
-    }
+  _onRegister = () => {
+    return true
   }
 
   render() {
     return (
       <ImageBackground style={styles.picture} source={ImgBackground}>
-        <View style={styles.containerImage}>
-          <Image source={LogoReact} style={styles.image} />
-          <Text style={styles.text}>SmartWindows</Text>
-        </View>
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <Input
             source={IconUser}
@@ -76,6 +62,15 @@ export default class LoginScreen extends React.Component {
           />
           <Input
             source={IconLocked}
+            placeholder="Email"
+            returnKeyType={'done'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            value={this.state.email}
+            onChange={this._onPasswordTextChanged}
+          />
+          <Input
+            source={IconLocked}
             secureTextEntry={true}
             placeholder="Password"
             returnKeyType={'done'}
@@ -85,13 +80,11 @@ export default class LoginScreen extends React.Component {
             onChange={this._onPasswordTextChanged}
           />
         </KeyboardAvoidingView>
-        <View style={styles.containerSignup}>
-          <Text style={styles.text}>Create Account</Text>
-          <Text style={styles.text}>Forgot Password?</Text>
-        </View>
         <LoginButton
-          onPressButton={this._isValidUser}
+          onPressButton={this._onRegister}
           navigation={this.props.navigation}
+          message='Register'
+          screen='Login'
         />
       </ImageBackground>
     )
@@ -99,36 +92,16 @@ export default class LoginScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  containerImage: {
-    alignItems: 'center',
-    flex: 3,
-    justifyContent: 'center',
-  },
-  containerSignup: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: 65,
-    width: DEVICE_WIDTH,
-  },
-  image: {
-    height: DEVICE_WIDTH * 0.50,
-    width: DEVICE_WIDTH * 0.50,
-  },
   picture: {
     flex: 1,
     height: null,
     resizeMode: 'cover',
     width: null,
   },
-  text: {
-    backgroundColor: 'transparent',
-    color: 'white',
-    fontWeight: 'bold',
-    marginTop: 20,
+  container: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'column',
   },
 })

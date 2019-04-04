@@ -1,13 +1,12 @@
 import React from 'react'
 import {
-  Button,
   FlatList,
   Image,
   StyleSheet,
   TouchableHighlight,
   View,
 } from 'react-native'
-
+import {colors} from '../../styles'
 const DATA = [
   {
     id: 1,
@@ -33,7 +32,7 @@ class ListItem extends React.PureComponent {
         underlayColor='#DDDDDD'
       >
         <View style={styles.columnContainer}>
-          <Image style={styles.imageThumbnail} source={{ uri: item.src }} />
+          <Image style={styles.image} source={{ uri: item.src }} />
         </View>
       </TouchableHighlight>
     )
@@ -41,22 +40,16 @@ class ListItem extends React.PureComponent {
 }
 
 export default class HomeScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: 'Home',
-      headerRight: (
-        <Button
-          onPress={() => navigation.navigate('Login')}
-          title="Log out"
-          color="#1771eb"
-        />
-      )
-    }
+  static navigationOptions = {
+    title: 'Home'
   }
+
 
   _onPressItem = (index) => {
     if (index === 0) {
       this.props.navigation.navigate('Device')
+    } else if (index === 1) {
+      this.props.navigation.navigate('Settings')
     }
   }
 
@@ -87,17 +80,28 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
-  },
-  imageThumbnail: {
-    alignItems: 'center',
-    height: 100,
     justifyContent: 'center',
-    width: 100,
+  },
+  image: {
+    width: 80,
+    height: 80,
   },
   columnContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    margin: 1,
+    flex: 5,
+    margin: 10,
+    padding: 10,
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.43,
+    shadowRadius: 9.51,
+    elevation: 15,
   }
 })
