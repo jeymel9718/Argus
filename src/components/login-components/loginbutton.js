@@ -9,10 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { colors } from '../../styles'
+import { colors,dimensionsDevice } from '../../styles'
 
-const DEVICE_WIDTH = Dimensions.get('window').width
-const DEVICE_HEIGHT = Dimensions.get('window').height
 const MARGIN = 40
 
 export default class LoginButton extends React.Component {
@@ -65,7 +63,7 @@ export default class LoginButton extends React.Component {
   render() {
     const changeWidth = this.buttonAnimated.interpolate({
       inputRange: [0, 1],
-      outputRange: [DEVICE_WIDTH - MARGIN, MARGIN],
+      outputRange: [dimensionsDevice.width - MARGIN, MARGIN],
     })
     const changeScale = this.growAnimated.interpolate({
       inputRange: [0, 1],
@@ -100,11 +98,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'flex-start',
-    top: -DEVICE_HEIGHT * 0.15,
   },
   button: {
     alignItems: 'center',
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.tertiary3,
     borderRadius: 20,
     height: MARGIN,
     justifyContent: 'center',
@@ -112,8 +109,8 @@ const styles = StyleSheet.create({
   },
   circle: {
     alignSelf: 'center',
-    backgroundColor: colors.secondary,
-    borderColor: colors.secondary,
+    backgroundColor: colors.tertiary3,
+    borderColor: colors.tertiary3,
     borderRadius: 100,
     borderWidth: 1,
     height: MARGIN,

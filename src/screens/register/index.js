@@ -1,35 +1,43 @@
 import React from 'react'
 import {
-  StyleSheet,
+  Image,
   ImageBackground,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native'
+import {
+  colors,
+  dimensionsDevice,
+  roundButton
+} from '../../styles'
 import ImgBackground from '../../../assets/wallpaper.jpg'
 import IconUser from '../../../assets/user.png'
 import IconLocked from '../../../assets/locked.png'
+import LogoReact from '../../../assets/logo.png'
 
 import Input from '../../components/login-components/logininput.js'
 import LoginButton from '../../components/login-components/loginbutton'
 
 export default class RegisterScreen extends React.Component {
   static navigationOptions = {
-    title: 'Home'
+    title: 'Register',
+    headerStyle: {
+      backgroundColor: colors.secondary
+    },
+    headerTintColor: colors.white
   }
 
   constructor() {
     super()
     this.state = {
       username: '',
-      email: '',
-      password: ''
+      password: '',
     }
   }
 
-  _onEmailTextChanged = event => {
-    this.setState({
-      email: event.nativeEvent.text,
-    })
-  }
 
   _onPasswordTextChanged = event => {
     this.setState({
@@ -50,6 +58,9 @@ export default class RegisterScreen extends React.Component {
   render() {
     return (
       <ImageBackground style={styles.picture} source={ImgBackground}>
+        <View style={styles.containerImage}>
+          <Image source={LogoReact} style={styles.image} />
+        </View>
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <Input
             source={IconUser}
@@ -59,15 +70,6 @@ export default class RegisterScreen extends React.Component {
             autoCorrect={false}
             value={this.state.username}
             onChange={this._onUsernameTextChanged}
-          />
-          <Input
-            source={IconLocked}
-            placeholder="Email"
-            returnKeyType={'done'}
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            value={this.state.email}
-            onChange={this._onPasswordTextChanged}
           />
           <Input
             source={IconLocked}
@@ -86,6 +88,13 @@ export default class RegisterScreen extends React.Component {
           message='Register'
           screen='Login'
         />
+        <TouchableOpacity
+          style={styles.button}
+          activeOpacity = {1}
+          onPress={()=> this.props.navigation.navigate('Login')}
+        >
+        <Text style={styles.text}>Cancel</Text>
+        </TouchableOpacity>
       </ImageBackground>
     )
   }
@@ -98,10 +107,29 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     width: null,
   },
+  containerImage: {
+    alignItems: 'center',
+    flex: 2,
+    justifyContent: 'center',
+  },
+  image: {
+    height: dimensionsDevice.height*0.20,
+    width: dimensionsDevice.height*0.20,
+  },
   container: {
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'space-between',
-    flexDirection: 'column',
+  },
+  button: {
+    ...roundButton,
+    backgroundColor: colors.error,
+    borderColor: colors.error,
+    top: '-15%',
+    height: 40,
+    width: dimensionsDevice.width*0.9,
+  },
+  text: {
+    backgroundColor: 'transparent',
+    color: colors.white,
   },
 })

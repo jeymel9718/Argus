@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from 'react-native'
+import { dimensionsDevice } from '../../styles'
 
 import ImgBackground from '../../../assets/wallpaper.jpg'
 import IconUser from '../../../assets/user.png'
@@ -20,7 +21,10 @@ const USER = {
   username: 'Thanos',
   password: '123',
 }
-
+const INPUT = {
+  width: dimensionsDevice.width * 0.9,
+  height: dimensionsDevice.height * 0.15,
+}
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -82,6 +86,12 @@ export default class LoginScreen extends React.Component {
             onChange={this._onPasswordTextChanged}
           />
         </KeyboardAvoidingView>
+        <LoginButton
+          onPressButton={this._isValidUser}
+          navigation={this.props.navigation}
+          message='Login'
+          screen='Home'
+        />
         <View style={styles.containerSignUp}>
           <Text
             style={styles.text}
@@ -89,12 +99,6 @@ export default class LoginScreen extends React.Component {
           >Create Account</Text>
           <Text style={styles.text}>Forgot Password?</Text>
         </View>
-        <LoginButton
-          onPressButton={this._isValidUser}
-          navigation={this.props.navigation}
-          message='Login'
-          screen='Home'
-        />
       </ImageBackground>
     )
   }
@@ -113,8 +117,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    height: '50%',
-    width: '50%',
+    height: dimensionsDevice.height * 0.30,
+    width: dimensionsDevice.height * 0.30,
   },
   container: {
     alignItems: 'center',
@@ -124,13 +128,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: '15%',
-    width: '100%',
+    top: '-20%',
+    width: dimensionsDevice.width,
   },
   text: {
     backgroundColor: 'transparent',
     color: 'white',
     fontWeight: 'bold',
     marginTop: 20,
-  },
+  }
 })

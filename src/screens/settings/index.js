@@ -2,51 +2,62 @@ import React from 'react'
 import {
   Button,
   Image,
+  ImageBackground,
   StyleSheet,
-  View,
 } from 'react-native'
-import { colors } from '../../styles'
+import {
+  colors,
+  dimensionsDevice
+} from '../../styles'
 import SettingsList from 'react-native-settings-list'
 
+import ImgBackgroundSettings from '../../../assets/settingsbackground.jpg'
 import ImgUserAvatar from '../../../assets/thanos.jpg'
 
 export default class SettingsScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Settings',
+    headerStyle: {
+      backgroundColor: colors.secondary
+    },
+    headerTintColor: colors.white
+  }
+
   render() {
     return (
-      <View style={{ backgroundColor: '#EFEFF4', flex: 1 }}>
-        <View style={styles.containerImage}>
-          <Image source={ImgUserAvatar} style={styles.avatarImage} />
-        </View>
-        <View style={{ backgroundColor: '#EFEFF4', flex: 1 }}>
-          <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
-            <SettingsList.Item
-              isAuth={true}
-              authPropsUser={{ placeholder: 'User', value: 'Thanos' }}
-              authPropsPW={{ placeholder: 'Password', value: '123' }}
-              onPress={() => alert("Cambio de parametros")}
-            />
-          </SettingsList>
-          <Button
-            title='Logout'
-            onPress={()=> this.props.navigation.navigate('Login')}
-            color={colors.error}
+      <ImageBackground style={styles.picture} source={ImgBackgroundSettings}>
+        <Image source={ImgUserAvatar} style={styles.avatarImage} />
+        <SettingsList borderColor={colors.tertiary} defaultItemSize={50}>
+          <SettingsList.Item
+            isAuth={true}
+            authPropsUser={{ placeholder: 'User', value: 'Thanos' }}
+            authPropsPW={{ placeholder: 'Password', value: '123' }}
+            onPress={() => alert("Cambio de parametros")}
           />
-        </View>
-      </View>
+        </SettingsList>
+        <Button
+          title='Logout'
+          onPress={() => this.props.navigation.navigate('Login')}
+          color={colors.error}
+        />
+      </ImageBackground>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  containerImage: {
-    alignItems: 'center',
+  picture: {
     flex: 1,
-    justifyContent: 'center',
+    height: null,
+    resizeMode: 'cover',
+    width: null,
   },
   avatarImage: {
-    borderRadius: 70,
-    height: '50%',
-    width: '50%',
+    alignSelf: 'center',
+    borderRadius: (dimensionsDevice.width * 0.25) / 2,
+    height: dimensionsDevice.width * 0.25,
+    marginTop: 2,
+    width: dimensionsDevice.width * 0.25,
   },
   imageStyle: {
     alignSelf: 'center',

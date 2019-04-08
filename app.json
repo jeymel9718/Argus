@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Ventanas Inteligentes",
+    "name": "SmartWindows",
     "slug": "Argus",
     "privacy": "public",
     "sdkVersion": "32.0.0",
@@ -22,6 +22,9 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "com.argus.smartwindows"
+    },
     "ios": {
       "supportsTablet": true
     }

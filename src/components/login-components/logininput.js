@@ -1,14 +1,11 @@
 import React from 'react'
-import Dimensions from 'Dimensions'
 import{
     StyleSheet,
     View,
     TextInput,
     Image
 } from 'react-native'
-import {colors} from '../../styles'
-
-const DEVICE_WIDTH = Dimensions.get('window').width
+import {colors, dimensionsDevice} from '../../styles'
 
 export default class LoginInput extends React.Component{
     render(){
@@ -34,8 +31,8 @@ export default class LoginInput extends React.Component{
 const styles = StyleSheet.create({
     input: {
       backgroundColor: colors.gray,
-      width: DEVICE_WIDTH*0.9,
-      height: '62%',
+      width: dimensionsDevice.width*0.9,
+      height: dimensionsDevice.height*0.05,
       marginHorizontal: 20,
       paddingLeft: 45,
       borderRadius: 20,
@@ -47,9 +44,9 @@ const styles = StyleSheet.create({
     inlineImg: {
       position: 'absolute',
       zIndex: 99,
-      width: '6%',
-      height: '35%',
-      left: '10%',
-      top: '15%',
+      width: dimensionsDevice.width*0.063,
+      height: dimensionsDevice.width*0.063,
+      left: 35,
+      top: '10%',
     },
 })

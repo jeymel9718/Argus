@@ -6,14 +6,19 @@ import HomeScreen from './src/screens/home'
 import DeviceScreen from './src/screens/device'
 import SettingsScreen from './src/screens/settings'
 import RegisterScreen from './src/screens/register'
+import AlarmScreen from './src/screens/alarm'
 
 const App = createStackNavigator({
+  Alarm: { screen: AlarmScreen },
+  Device: { screen: DeviceScreen },
   Home: { screen: HomeScreen },
   Login: { screen: LoginScreen },
-  Device: { screen: DeviceScreen },
+  Register: { screen: RegisterScreen },
   Settings: { screen: SettingsScreen },
-  Register: { screen: RegisterScreen }
-})
+},
+  {
+    initialRouteName: 'Login'
+  })
 
 export default App
 
