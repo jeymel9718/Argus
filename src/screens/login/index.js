@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from 'react-native'
+import DialogInput from 'react-native-dialog-input';
 import { dimensionsDevice } from '../../styles'
 
 import ImgBackground from '../../../assets/wallpaper.jpg'
@@ -21,10 +22,7 @@ const USER = {
   username: 'Thanos',
   password: '123',
 }
-const INPUT = {
-  width: dimensionsDevice.width * 0.9,
-  height: dimensionsDevice.height * 0.15,
-}
+
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -35,7 +33,24 @@ export default class LoginScreen extends React.Component {
     this.state = {
       username: '',
       password: '',
+      isDialogVisible: true,
     }
+
+    global.IpAddress = 'localhost'
+  }
+
+  _onDialogClose = () => {
+    this.setState({
+      isDialogVisible: !this.state.isDialogVisible
+    })
+  }
+
+  _onDialogSubmit = inputText => {
+    global.IpAddress = inputText
+    this.setState({
+      isDialogVisible: !this.state.isDialogVisible
+    })
+    console.log(global.IpAddress)
   }
 
   _onPasswordTextChanged = event => {
@@ -50,11 +65,18 @@ export default class LoginScreen extends React.Component {
     })
   }
 
-  _isValidUser = () => {
-    if (this.state.username === USER.username && this.state.password === USER.password) {
-      return true
-    } else {
-      return false
+  _isValidUser = async () => {
+    const URL = `http://${global.IpAddress}:8080/api/v1/users/login?username=${this.state.username}&password=${this.state.password}`
+    try {
+      console.log(URL)
+      const response = await fetch(URL, {
+        method: 'GET',
+        mode:'cors',
+      })
+      const json = await response.json()
+      return json.login
+    } catch (error) {
+      alert(error)
     }
   }
 
@@ -99,6 +121,13 @@ export default class LoginScreen extends React.Component {
           >Create Account</Text>
           <Text style={styles.text}>Forgot Password?</Text>
         </View>
+        <DialogInput isDialogVisible={this.state.isDialogVisible}
+          title={"Server IP Address"}
+          message={"Insert server IP Address"}
+          hintInput={"192.168.0.1"}
+          submitInput={(inputText) => { this._onDialogSubmit(inputText) }}
+          closeDialog={this._onDialogClose}>
+        </DialogInput>
       </ImageBackground>
     )
   }

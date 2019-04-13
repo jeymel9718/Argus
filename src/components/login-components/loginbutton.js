@@ -1,7 +1,7 @@
 import React from 'react'
-import Dimensions from 'Dimensions'
 import {
   ActivityIndicator,
+  Alert,
   Animated,
   Easing,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { colors,dimensionsDevice } from '../../styles'
+import { colors, dimensionsDevice } from '../../styles'
 
 const MARGIN = 40
 
@@ -23,7 +23,7 @@ export default class LoginButton extends React.Component {
     }).start()
   }
 
-  _onPress() {
+  _onPress = async () => {
     if (this.state.isLoading) return;
 
     this.setState({ isLoading: true })
@@ -32,21 +32,17 @@ export default class LoginButton extends React.Component {
       duration: 200,
       easing: Easing.linear,
     }).start()
-
-    setTimeout(() => {
-      this._onGrow()
-    }, 2000)
-
-    setTimeout(() => {
-      if (this.props.onPressButton()) {
-        this.props.navigation.navigate(this.props.screen)
-      } else {
-        alert("Incorrecto")
-      }
-      this.setState({ isLoading: false })
+    const result = await this.props.onPressButton()
+    this.setState({ isLoading: false })
+    if (result) {
       this.buttonAnimated.setValue(0)
       this.growAnimated.setValue(0)
-    }, 2300)
+      this.props.navigation.navigate(this.props.screen)
+    } else {
+      Alert.alert("Login Incorrect", "Wrong username or password")
+      this.buttonAnimated.setValue(0)
+      this.growAnimated.setValue(0)
+    }
   }
 
   constructor() {
@@ -57,7 +53,6 @@ export default class LoginButton extends React.Component {
 
     this.buttonAnimated = new Animated.Value(0)
     this.growAnimated = new Animated.Value(0)
-    this._onPress = this._onPress.bind(this)
   }
 
   render() {

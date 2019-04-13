@@ -20,6 +20,17 @@ import {
 import ImgBackgroundDevice from '../../../assets/devicebackground.jpg'
 import IconMorning from '../../../assets/morning.png'
 import IconEvening from '../../../assets/night.png'
+import IconCalendar from '../../../assets/calendar.png'
+
+const WEEKDAYS = [
+  { id: 1, label: 'SU' },
+  { id: 2, label: 'MO' },
+  { id: 3, label: 'TU' },
+  { id: 4, label: 'WE' },
+  { id: 5, label: 'TH' },
+  { id: 6, label: 'FR' },
+  { id: 7, label: 'SA' },
+];
 
 export default class AlarmScreen extends React.Component {
   static navigationOptions = {
@@ -37,19 +48,21 @@ export default class AlarmScreen extends React.Component {
       isTimePickerVisible: false,
       openTime: '00:00',
       closeTime: '00:00',
+      activeAlarm: false,
+      activeTemperature: false,
       openClose: 1, //Open : 1, Close: 2
-      days: 0,
+      days: [],
     }
   }
 
   _handleDatePicked = (date) => {
     if (this.state.openClose == 1) {
       this.setState({
-        openTime: `${date.getUTCHours()}:${date.getUTCMinutes()}`
+        openTime: `${date.getHours()}:${date.getMinutes()}`
       })
     } else {
       this.setState({
-        closeTime: `${date.getUTCHours()}:${date.getUTCMinutes()}`
+        closeTime: `${date.getHours()}:${date.getMinutes()}`
       })
     }
     this._hideTimePicker()
@@ -59,25 +72,57 @@ export default class AlarmScreen extends React.Component {
 
   _showTimePicker = (OpenClose) => this.setState({ isTimePickerVisible: true, openClose: OpenClose })
 
+  _onActiveAlarm = () => {
+    const { activeAlarm } = this.state
+    this.setState({
+      activeAlarm: !activeAlarm
+    })
+  }
+
+  _onActiveTemperature = () => {
+    const { activeTemperature } = this.state
+    this.setState({
+      activeTemperature: !activeTemperature
+    })
+  }
+
   _onSubmit = () => {
+    let days = []
+    this.tag.itemsSelected.map((item) => {
+      days.push(item.id - 1)
+    })
+    this.setState({
+      days: days
+    })
+    console.log(days)
     Alert.alert('Selected items:', JSON.stringify(this.tag.itemsSelected))
   }
 
   render() {
-    const data = [
-      { id: 1, label: 'SU' },
-      { id: 2, label: 'MO' },
-      { id: 3, label: 'TU' },
-      { id: 4, label: 'WE' },
-      { id: 5, label: 'TH' },
-      { id: 6, label: 'FR' },
-      { id: 7, label: 'SA' },
-    ];
-
     return (
       <ImageBackground style={styles.picture} source={ImgBackgroundDevice}>
         <SettingsList borderColor={colors.tertiary} defaultItemSize={50}>
           <SettingsList.Header headerStyle={{ marginTop: 15 }} />
+          <SettingsList.Item
+            hasNavArrow={false}
+            hasSwitch={true}
+            title='Automatic Open'
+            titleInfo='Temperature'
+            switchOnValueChange={this._onActiveTemperature}
+            switchState={this.state.activeTemperature}
+          />
+          <SettingsList.Item
+            hasNavArrow={false}
+            hasSwitch={true}
+            icon={
+              <Image style={styles.imageStyle} source={IconCalendar} />
+            }
+            title='Automatic Open'
+            titleInfo='Alarm'
+            switchOnValueChange={this._onActiveAlarm}
+            switchState={this.state.activeAlarm}
+          />
+          <SettingsList.Header headerStyle={{ marginTop: 15 }} headerText='Alarm Configure' />
           <SettingsList.Item
             icon={
               <Image style={styles.imageStyle} source={IconMorning} />
@@ -98,7 +143,7 @@ export default class AlarmScreen extends React.Component {
         <View style={styles.buttonsContainer}>
           <Text style={styles.labelText}>Days: </Text>
           <TagSelect
-            data={data}
+            data={WEEKDAYS}
             itemStyle={styles.item}
             itemLabelStyle={styles.label}
             itemStyleSelected={styles.itemSelected}

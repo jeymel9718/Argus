@@ -11,7 +11,6 @@ import ImgBackgroundDevice from '../../../assets/devicebackground.jpg'
 import IconWindow from '../../../assets/window.png'
 import IconTemperature from '../../../assets/thermometer.png'
 import IconHumidity from '../../../assets/humidity.png'
-import IconCalendar from '../../../assets/calendar.png'
 
 export default class DeviceScreen extends React.Component {
   static navigationOptions = {
@@ -27,16 +26,64 @@ export default class DeviceScreen extends React.Component {
     this.state = {
       window1Value: false,
       window2Value: false,
+      temperature: '25.0',
+      humidity: '15',
     }
+    setInterval(this._getEnvironmentVariables,60000)
   }
 
-  _onWindow1ValueChange = () => {
+  _getEnvironmentVariables = async () => {
+    const response = await fetch(`http://${global.IpAddress}:8080/api/v1/environments/last`)
+    const json = await response.json()
+    this.setState({
+      temperature: json.temperature,
+      humidity: json.humidity
+    })
+  }
+
+  _onWindow1ValueChange = async () => {
     const { window1Value } = this.state
+    var windowstate = 0
+    if (!window1Value === true) {
+      windowstate = 1
+    } else {
+      windowstate = 0
+    }
+    const response = await fetch(`http://${global.IpAddress}:8080/api/v1/windows`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        window: 1,
+        state: windowstate
+      }),
+    })
+    const json = await response.json()
+    console.log(json)
     this.setState({ window1Value: !window1Value })
   }
 
-  _onWindow2ValueChange = () => {
+  _onWindow2ValueChange = async () => {
     const { window2Value } = this.state
+    var windowstate = 0
+    if (!window2Value === true) {
+      windowstate = 1
+    } else {
+      windowstate = 0
+    }
+    const response = await fetch(`http://${global.IpAddress}:8080/api/v1/windows`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        window: 2,
+        state: windowstate
+      }),
+    })
+    const json = await response.json()
+    console.log(json)
     this.setState({ window2Value: !window2Value })
   }
 
@@ -46,7 +93,7 @@ export default class DeviceScreen extends React.Component {
         <SettingsList borderColor={colors.tertiary} defaultItemSize={50}>
           <SettingsList.Header headerStyle={styles.headerText} headerText='Windows Control' />
           <SettingsList.Item
-            hasNavArrow={false}
+            hasNavArrow={true}
             hasSwitch={true}
             icon={
               <Image style={styles.imageStyle} source={IconWindow} />
@@ -54,9 +101,10 @@ export default class DeviceScreen extends React.Component {
             switchOnValueChange={this._onWindow1ValueChange}
             switchState={this.state.window1Value}
             title='Window 1'
+            onPress={() => this.props.navigation.navigate('Alarm',{window: 1})}
           />
           <SettingsList.Item
-            hasNavArrow={false}
+            hasNavArrow={true}
             hasSwitch={true}
             icon={
               <Image style={styles.imageStyle} source={IconWindow} />
@@ -64,29 +112,21 @@ export default class DeviceScreen extends React.Component {
             switchOnValueChange={this._onWindow2ValueChange}
             switchState={this.state.window2Value}
             title='Window 2'
-          />
-          <SettingsList.Item
-            hasNavArrow={true}
-            icon={
-              <Image style={styles.imageStyle} source={IconCalendar} />
-            }
-            titleInfo='Configure windows alarm'
-            title='Alarm'
-            onPress={() => this.props.navigation.navigate('Alarm')}
+            onPress={() => this.props.navigation.navigate('Alarm',{window:2})}
           />
           <SettingsList.Header headerStyle={styles.headerText} headerText='Weather' />
           <SettingsList.Item
             hasNavArrow={false}
             icon={<Image style={styles.imageStyle} source={IconTemperature} />}
             title='Temperature'
-            titleInfo='25.20 °C'
+            titleInfo={`${this.state.temperature} °C`}
             titleInfoStyle={styles.titleInfoStyle}
           />
           <SettingsList.Item
             hasNavArrow={false}
             icon={<Image style={styles.imageStyle} source={IconHumidity} />}
             title='Humidity'
-            titleInfo='50%'
+            titleInfo={`${this.state.humidity}%`}
             titleInfoStyle={styles.titleInfoStyle}
           />
         </SettingsList>

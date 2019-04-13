@@ -33,11 +33,17 @@ export default class RegisterScreen extends React.Component {
   constructor() {
     super()
     this.state = {
+      name: '',
       username: '',
       password: '',
     }
   }
 
+  _onNameTextChanged = event => {
+    this.setState({
+      name: event.nativeEvent.text,
+    })
+  }
 
   _onPasswordTextChanged = event => {
     this.setState({
@@ -51,8 +57,27 @@ export default class RegisterScreen extends React.Component {
     })
   }
 
-  _onRegister = () => {
-    return true
+  _onRegister = async () => {
+    try {
+      const URL = `http://${global.IpAddress}:8080/api/v1/users`
+      console.log(URL)
+      const response = await fetch(URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: this.state.name,
+          username: this.state.username,
+          password: this.state.password
+        }),
+      })
+      const json = await response.json()
+      console.log(json)
+      return true
+    } catch (error) {
+      alert(error)
+    }
   }
 
   render() {
@@ -62,6 +87,15 @@ export default class RegisterScreen extends React.Component {
           <Image source={LogoReact} style={styles.image} />
         </View>
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
+          <Input
+            source={IconUser}
+            placeholder="Name"
+            autoCapitalize={'none'}
+            returnKeyType={'done'}
+            autoCorrect={false}
+            value={this.state.name}
+            onChange={this._onNameTextChanged}
+          />
           <Input
             source={IconUser}
             placeholder="Username"
@@ -90,10 +124,10 @@ export default class RegisterScreen extends React.Component {
         />
         <TouchableOpacity
           style={styles.button}
-          activeOpacity = {1}
-          onPress={()=> this.props.navigation.navigate('Login')}
+          activeOpacity={1}
+          onPress={() => this.props.navigation.navigate('Login')}
         >
-        <Text style={styles.text}>Cancel</Text>
+          <Text style={styles.text}>Cancel</Text>
         </TouchableOpacity>
       </ImageBackground>
     )
@@ -113,8 +147,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    height: dimensionsDevice.height*0.20,
-    width: dimensionsDevice.height*0.20,
+    height: dimensionsDevice.height * 0.20,
+    width: dimensionsDevice.height * 0.20,
   },
   container: {
     alignItems: 'center',
@@ -126,7 +160,7 @@ const styles = StyleSheet.create({
     borderColor: colors.error,
     top: '-15%',
     height: 40,
-    width: dimensionsDevice.width*0.9,
+    width: dimensionsDevice.width * 0.9,
   },
   text: {
     backgroundColor: 'transparent',
