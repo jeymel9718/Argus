@@ -29,7 +29,25 @@ export default class DeviceScreen extends React.Component {
       temperature: '25.0',
       humidity: '15',
     }
-    setInterval(this._getEnvironmentVariables,60000)
+  }
+
+  componentWillMount() {
+    const windowsState = this.props.navigation.getParam('windowsState', [])
+    windowsState.forEach(element => {
+      if (element.window === 1) {
+        this.setState({
+          window1Value: !!element.state
+        })
+      } else {
+        this.setState({
+          window2Value: !!element.state
+        })
+      }
+    })
+  }
+
+  componentDidMount() {
+    this._getEnvironmentVariables()
   }
 
   _getEnvironmentVariables = async () => {
@@ -87,6 +105,27 @@ export default class DeviceScreen extends React.Component {
     this.setState({ window2Value: !window2Value })
   }
 
+  _environmenStatistics = async () => {
+    try {
+      const response = await fetch(`http://${global.IpAddress}:8080/api/v1/environments`)
+      const json = await response.json()
+      console.log(json)
+      this.props.navigation.navigate('Environment', { environments: json })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  _setWindowAlarm = async (window) => {
+    try {
+      const response = await fetch(`http://${global.IpAddress}:8080/api/v1/alarms`)
+      const json = await response.json()
+      this.props.navigation.navigate('Alarm', { window: window, alarms: json })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   render() {
     return (
       <ImageBackground style={styles.picture} source={ImgBackgroundDevice}>
@@ -101,7 +140,7 @@ export default class DeviceScreen extends React.Component {
             switchOnValueChange={this._onWindow1ValueChange}
             switchState={this.state.window1Value}
             title='Window 1'
-            onPress={() => this.props.navigation.navigate('Alarm',{window: 1})}
+            onPress={() => this._setWindowAlarm(1)}
           />
           <SettingsList.Item
             hasNavArrow={true}
@@ -112,22 +151,24 @@ export default class DeviceScreen extends React.Component {
             switchOnValueChange={this._onWindow2ValueChange}
             switchState={this.state.window2Value}
             title='Window 2'
-            onPress={() => this.props.navigation.navigate('Alarm',{window:2})}
+            onPress={() => this._setWindowAlarm(2)}
           />
           <SettingsList.Header headerStyle={styles.headerText} headerText='Weather' />
           <SettingsList.Item
-            hasNavArrow={false}
+            hasNavArrow={true}
             icon={<Image style={styles.imageStyle} source={IconTemperature} />}
             title='Temperature'
             titleInfo={`${this.state.temperature} °C`}
             titleInfoStyle={styles.titleInfoStyle}
+            onPress={this._environmenStatistics}
           />
           <SettingsList.Item
-            hasNavArrow={false}
+            hasNavArrow={true}
             icon={<Image style={styles.imageStyle} source={IconHumidity} />}
             title='Humidity'
             titleInfo={`${this.state.humidity}%`}
             titleInfoStyle={styles.titleInfoStyle}
+
           />
         </SettingsList>
       </ImageBackground>

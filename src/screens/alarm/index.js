@@ -46,23 +46,104 @@ export default class AlarmScreen extends React.Component {
 
     this.state = {
       isTimePickerVisible: false,
-      openTime: '00:00',
-      closeTime: '00:00',
+      openTime: { hours: 0, minutes: 0 },
+      closeTime: { hours: 0, minutes: 0 },
       activeAlarm: false,
       activeTemperature: false,
       openClose: 1, //Open : 1, Close: 2
+      window: 0,
       days: [],
+    }
+  }
+
+  componentWillMount() {
+    const window = this.props.navigation.getParam('window', '0')
+    const alarms = this.props.navigation.getParam('alarms', [])
+    this.setState({
+      window: window
+    })
+    alarms.forEach(element => {
+      if (element.window === window && element.state === 1) {
+        this.setState({
+          days: this._renderDays(element.days),
+          activeAlarm: element.active,
+          openTime: { hours: element.hour, minutes: element.minutes }
+        })
+      } else if (element.window === window && element.state === 0) {
+        this.setState({
+          closeTime: { hours: element.hour, minutes: element.minutes }
+        })
+      }
+    })
+    console.log("Finish")
+  }
+
+  _activeWindowAlarm = async (days) => {
+    try {
+      await fetch(`http://${global.IpAddress}:8080/api/v1/alarms/open`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          window: this.state.window,
+          hour: this.state.openTime.hours,
+          minutes: this.state.openTime.minutes,
+          days: days
+        }),
+      })
+
+      await fetch(`http://${global.IpAddress}:8080/api/v1/alarms/close`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          window: this.state.window,
+          hour: this.state.closeTime.hours,
+          minutes: this.state.closeTime.minutes,
+          days: days
+        }),
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  _desactiveAlarm = async () => {
+    try {
+      await fetch(`http://${global.IpAddress}:8080/api/v1/alarms/open/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          window: this.state.window
+        }),
+      })
+
+      await fetch(`http://${global.IpAddress}:8080/api/v1/alarms/close/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          window: this.state.window
+        }),
+      })
+    } catch (error) {
+      alert(error)
     }
   }
 
   _handleDatePicked = (date) => {
     if (this.state.openClose == 1) {
       this.setState({
-        openTime: `${date.getHours()}:${date.getMinutes()}`
+        openTime: { hours: date.getHours(), minutes: date.getMinutes() }
       })
     } else {
       this.setState({
-        closeTime: `${date.getHours()}:${date.getMinutes()}`
+        closeTime: { hours: date.getHours(), minutes: date.getMinutes() }
       })
     }
     this._hideTimePicker()
@@ -86,19 +167,37 @@ export default class AlarmScreen extends React.Component {
     })
   }
 
-  _onSubmit = () => {
+  _onSubmit = async () => {
     let days = []
     this.tag.itemsSelected.map((item) => {
       days.push(item.id - 1)
     })
-    this.setState({
-      days: days
+    try {
+      if (this.state.activeAlarm) {
+        await this._activeWindowAlarm(days)
+        alert("Alarm On")
+      } else {
+        await this._desactiveAlarm()
+        alert("Alarm Off")
+      }
+    } catch (error) {
+      alert(error)
+    }
+
+  }
+
+  _renderDays = (days) => {
+    let defaultdays = []
+    WEEKDAYS.forEach(element => {
+      if (days.includes(element.id - 1)) {
+        defaultdays.push(element)
+      }
     })
-    console.log(days)
-    Alert.alert('Selected items:', JSON.stringify(this.tag.itemsSelected))
+    return defaultdays
   }
 
   render() {
+    console.log("Init render")
     return (
       <ImageBackground style={styles.picture} source={ImgBackgroundDevice}>
         <SettingsList borderColor={colors.tertiary} defaultItemSize={50}>
@@ -106,19 +205,11 @@ export default class AlarmScreen extends React.Component {
           <SettingsList.Item
             hasNavArrow={false}
             hasSwitch={true}
-            title='Automatic Open'
-            titleInfo='Temperature'
-            switchOnValueChange={this._onActiveTemperature}
-            switchState={this.state.activeTemperature}
-          />
-          <SettingsList.Item
-            hasNavArrow={false}
-            hasSwitch={true}
             icon={
               <Image style={styles.imageStyle} source={IconCalendar} />
             }
             title='Automatic Open'
-            titleInfo='Alarm'
+            titleInfo='Active/Desactive Alarm'
             switchOnValueChange={this._onActiveAlarm}
             switchState={this.state.activeAlarm}
           />
@@ -128,7 +219,7 @@ export default class AlarmScreen extends React.Component {
               <Image style={styles.imageStyle} source={IconMorning} />
             }
             title='Open at: '
-            titleInfo={this.state.openTime}
+            titleInfo={`${this.state.openTime.hours}:${this.state.openTime.minutes}`}
             onPress={() => this._showTimePicker(1)}
           />
           <SettingsList.Item
@@ -136,7 +227,7 @@ export default class AlarmScreen extends React.Component {
               <Image style={styles.imageStyle} source={IconEvening} />
             }
             title='Close at: '
-            titleInfo={this.state.closeTime}
+            titleInfo={`${this.state.closeTime.hours}:${this.state.closeTime.minutes}`}
             onPress={() => this._showTimePicker(2)}
           />
         </SettingsList>
@@ -144,6 +235,7 @@ export default class AlarmScreen extends React.Component {
           <Text style={styles.labelText}>Days: </Text>
           <TagSelect
             data={WEEKDAYS}
+            value={this.state.days}
             itemStyle={styles.item}
             itemLabelStyle={styles.label}
             itemStyleSelected={styles.itemSelected}

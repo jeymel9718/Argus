@@ -55,9 +55,15 @@ export default class HomeScreen extends React.Component {
     headerTintColor: colors.white
   }
 
-  _onPressItem = (index) => {
+  _onPressItem = async (index) => {
     if (index === 0) {
-      this.props.navigation.navigate('Device')
+      try {
+        const response = await fetch(`http://${global.IpAddress}:8080/api/v1/windows`)
+        const json = await response.json()
+        this.props.navigation.navigate('Device', { windowsState: json })
+      } catch (error) {
+        alert(error)
+      }
     } else if (index === 1) {
       this.props.navigation.navigate('Settings')
     }

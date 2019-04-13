@@ -18,11 +18,6 @@ import LogoReact from '../../../assets/logo.png'
 import Input from '../../components/login-components/logininput.js'
 import LoginButton from '../../components/login-components/loginbutton'
 
-const USER = {
-  username: 'Thanos',
-  password: '123',
-}
-
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -66,12 +61,14 @@ export default class LoginScreen extends React.Component {
   }
 
   _isValidUser = async () => {
+    global.username = this.state.username
+    global.password = this.state.password
     const URL = `http://${global.IpAddress}:8080/api/v1/users/login?username=${this.state.username}&password=${this.state.password}`
     try {
       console.log(URL)
       const response = await fetch(URL, {
         method: 'GET',
-        mode:'cors',
+        mode: 'cors',
       })
       const json = await response.json()
       return json.login
@@ -112,6 +109,8 @@ export default class LoginScreen extends React.Component {
           onPressButton={this._isValidUser}
           navigation={this.props.navigation}
           message='Login'
+          errorTitle='Failed Login'
+          errorMessage='Wrong username or password'
           screen='Home'
         />
         <View style={styles.containerSignUp}>
@@ -119,7 +118,6 @@ export default class LoginScreen extends React.Component {
             style={styles.text}
             onPress={() => this.props.navigation.navigate('Register')}
           >Create Account</Text>
-          <Text style={styles.text}>Forgot Password?</Text>
         </View>
         <DialogInput isDialogVisible={this.state.isDialogVisible}
           title={"Server IP Address"}

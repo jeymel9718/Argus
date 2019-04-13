@@ -120,6 +120,8 @@ export default class RegisterScreen extends React.Component {
           onPressButton={this._onRegister}
           navigation={this.props.navigation}
           message='Register'
+          errorTitle='Failed to register'
+          errorMessage='Register error'
           screen='Login'
         />
         <TouchableOpacity

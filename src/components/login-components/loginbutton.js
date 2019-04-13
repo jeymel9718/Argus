@@ -32,16 +32,21 @@ export default class LoginButton extends React.Component {
       duration: 200,
       easing: Easing.linear,
     }).start()
-    const result = await this.props.onPressButton()
-    this.setState({ isLoading: false })
-    if (result) {
-      this.buttonAnimated.setValue(0)
-      this.growAnimated.setValue(0)
-      this.props.navigation.navigate(this.props.screen)
-    } else {
-      Alert.alert("Login Incorrect", "Wrong username or password")
-      this.buttonAnimated.setValue(0)
-      this.growAnimated.setValue(0)
+    try {
+      const result = await this.props.onPressButton()
+      this.setState({ isLoading: false })
+      if (result) {
+        this.buttonAnimated.setValue(0)
+        this.growAnimated.setValue(0)
+        this.props.navigation.navigate(this.props.screen)
+      } else {
+        Alert.alert(this.props.errorTitle, this.props.errorMessage)
+        this.buttonAnimated.setValue(0)
+        this.growAnimated.setValue(0)
+      }
+    } catch (error) {
+      this.setState({ isLoading: false })
+      alert(error)
     }
   }
 

@@ -30,8 +30,8 @@ export default class SettingsScreen extends React.Component {
         <SettingsList borderColor={colors.tertiary} defaultItemSize={50}>
           <SettingsList.Item
             isAuth={true}
-            authPropsUser={{ placeholder: 'User', value: 'Thanos' }}
-            authPropsPW={{ placeholder: 'Password', value: '123' }}
+            authPropsUser={{ placeholder: 'User', value: global.username }}
+            authPropsPW={{ placeholder: 'Password', value: global.password }}
             onPress={() => alert("Cambio de parametros")}
           />
         </SettingsList>

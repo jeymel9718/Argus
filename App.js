@@ -1,4 +1,3 @@
-import React from 'react';
 import { createStackNavigator } from 'react-navigation'
 
 import LoginScreen from './src/screens/login'
@@ -7,6 +6,7 @@ import DeviceScreen from './src/screens/device'
 import SettingsScreen from './src/screens/settings'
 import RegisterScreen from './src/screens/register'
 import AlarmScreen from './src/screens/alarm'
+import EnvironmentScreen from './src/screens/environment'
 
 const App = createStackNavigator({
   Alarm: { screen: AlarmScreen },
@@ -15,6 +15,7 @@ const App = createStackNavigator({
   Login: { screen: LoginScreen },
   Register: { screen: RegisterScreen },
   Settings: { screen: SettingsScreen },
+  Environment: { screen: EnvironmentScreen }
 },
   {
     initialRouteName: 'Login'
