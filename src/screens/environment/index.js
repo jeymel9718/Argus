@@ -11,8 +11,8 @@ import {
   colors,
   dimensionsDevice
 } from '../../styles'
-import IconHot from '../../../assets/hot.jpg';
-import IconCold from '../../../assets/cold.png';
+import IconHot from '../../../assets/hot.jpg'
+import IconCold from '../../../assets/cold.png'
 
 class ListItem extends React.PureComponent {
 
@@ -65,7 +65,7 @@ export default class SearchResults extends React.Component {
   }
 
   render() {
-    const environments = this.props.navigation.getParam('environments',[])
+    const environments = this.props.navigation.getParam('environments', [])
     console.log(environments)
     return (
       <FlatList
@@ -73,35 +73,35 @@ export default class SearchResults extends React.Component {
         keyExtractor={this._keyExtractor}
         renderItem={this._renderItem}
       />
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
   thumbnail: {
-    width: dimensionsDevice.width * 0.30,
     height: dimensionsDevice.width * 0.30,
     marginRight: 10,
+    width: dimensionsDevice.width * 0.30,
   },
   textContainer: {
     flex: 1,
   },
   dateText: {
+    color: colors.tertiary4,
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.tertiary4
   },
   environmentsText: {
+    color: colors.secondary3,
     fontSize: 15,
     fontWeight: 'bold',
-    color: colors.secondary3
   },
   separator: {
+    backgroundColor: colors.black,
     height: 1,
-    backgroundColor: colors.black
   },
   rowContainer: {
     flexDirection: 'row',
-    padding: 10
+    padding: 10,
   }
-});
+})
